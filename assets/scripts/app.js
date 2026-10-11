@@ -9,9 +9,20 @@ class Product {
 };
 class ShoppingCart {
   items = [];
+  set cartItems(value) {
+    this.items = value;
+    this.totalOutput.innerHTML = `<h2> Total: \$ ${this.totalAmount.toFixed(2)}</h2>`;
+  };
+  get totalAmount() {
+    const sum = this.items.reduce((prevValue, currentItem) => {
+      return prevValue + currentItem.price;
+    }, 0);
+    return sum;
+  };
   addProduct(prod) {
-    this.items.push(prod);
-    this.totalOutput.innerHTML = `<h2> Total: \$ ${1}</h2>`;
+    const updatedItems = [...this.items];
+    updatedItems.push(prod);
+    this.cartItems = updatedItems;
   };
   render () {
     const cartEl = document.createElement('section');
@@ -100,7 +111,7 @@ class Shop {
 
 class App {
   static cart;
-  
+
   static init() {
     const shop = new Shop();
     shop.render();

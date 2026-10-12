@@ -61,6 +61,8 @@ class ShoppingCart extends Component { // We can only extend one class in JS
     `;
     cartEl.className = 'cart'
     this.totalOutput = cartEl.querySelector('h2');
+    //console.log(cartEl);
+    //console.log(this.totalOutput);
   };
 };
 
@@ -70,8 +72,8 @@ class ProductItem extends Component {
     this.product = product;
   };
   addToCart() {
-    console.log('adding product to cart');
-    console.log(this.product);
+    //console.log('adding product to cart');
+    //console.log(this.product);
     App.addProductToCart(this.product);
   };
   render() {
@@ -127,7 +129,8 @@ class ProductList extends Component {
 class Shop {
   render() {
     this.cart = new ShoppingCart('app');
-    const productList = new ProductList();
+    this.cart.render();
+    const productList = new ProductList('app');
     productList.render();
     
   };
@@ -135,7 +138,6 @@ class Shop {
 
 class App {
   static cart;
-
   static init() {
     const shop = new Shop();
     shop.render();

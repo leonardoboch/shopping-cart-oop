@@ -32,7 +32,7 @@ class Component {
     return rootElement;
   };
 };
-class ShoppingCart {
+class ShoppingCart extends Component { // We can only extend one class in JS
   items = [];
   set cartItems(value) {
     this.items = value;
@@ -44,25 +44,29 @@ class ShoppingCart {
     }, 0);
     return sum;
   };
+
+  constructor(renderHookId) { // average constructor for ShoppingCart class
+    super(renderHookId); //calls superclass constructor
+  } ;
   addProduct(prod) {
     const updatedItems = [...this.items];
     updatedItems.push(prod);
     this.cartItems = updatedItems;
   };
   render () {
-    const cartEl = document.createElement('section');
+    const cartEl = this.createRootElement('section', "cart");
     cartEl.innerHTML = `
       <h2> Total \$${0} </h2>
       <button> Order Now! </button>
     `;
     cartEl.className = 'cart'
     this.totalOutput = cartEl.querySelector('h2');
-    return cartEl;
   };
 };
 
-class ProductItem {
-  constructor(product) {
+class ProductItem extends Component {
+  constructor(product, renderHookId) {
+    super(renderHookId);
     this.product = product;
   };
   addToCart() {
@@ -71,8 +75,7 @@ class ProductItem {
     App.addProductToCart(this.product);
   };
   render() {
-    const prodEl = document.createElement("li");
-    prodEl.className = "product-item";
+    const prodEl = this.createRootElement('li', 'product-item');
     prodEl.innerHTML = `
         <div>
           <img src="${this.product.imageUrl}" alt="${this.product.title}" />
@@ -89,11 +92,10 @@ class ProductItem {
       // method or instance we have called it.
       // so, with bind, we pass the instance scope
       addCartButton.addEventListener('click', this.addToCart.bind(this))
-      return prodEl;
   }
 }
 
-class ProductList {
+class ProductList extends Component {
   products = [
     new Product(
       "A pillow",
@@ -108,13 +110,14 @@ class ProductList {
       89.99,
     ),
   ];
+  constructor(renderHookId) {
+    super(renderHookId);
+  };
   render() {
-    const prodList = document.createElement("ul");
-    prodList.className = "product-list";
+    const prodList = this.createRootElement("ul", "product-list", [new ElementAttribute('id', 'prod-list')]);
     for (const prod of this.products) {
-      const productItem = new ProductItem(prod);
-      const prodEl = productItem.render();
-      prodList.append(prodEl);
+      const productItem = new ProductItem(prod, 'prod-list');
+      productItem.render();
     }
     return prodList;
   }
@@ -123,13 +126,9 @@ class ProductList {
 
 class Shop {
   render() {
-    const renderHook = document.getElementById("app");
-    this.cart = new ShoppingCart();
-    const cartEl = this.cart.render();
+    this.cart = new ShoppingCart('app');
     const productList = new ProductList();
-    const prodListEl = productList.render();
-    renderHook.append(cartEl);
-    renderHook.append(prodListEl);
+    productList.render();
     
   };
 };

@@ -57,14 +57,23 @@ class ShoppingCart extends Component {
     const updatedItems = [...this.items];
     updatedItems.push(prod);
     this.cartItems = updatedItems;
-  }
+  };
+  orderProducts () {
+    console.log('Ordering...');
+    console.log(this.items);
+
+  };
   render() {
     const cartEl = this.createRootElement("section", "cart");
     cartEl.innerHTML = `
       <h2> Total \$${0} </h2>
       <button> Order Now! </button>
     `;
-    cartEl.className = "cart";
+    const orderButton = cartEl.querySelector('button');
+    // we can use the .bind() method as well
+    // orderButton.addEventListener('click', this.orderProducts.bind(this));
+    //wrapping the method call in a arrow function avoids this problems
+    orderButton.addEventListener('click', () => this.orderProducts());
     this.totalOutput = cartEl.querySelector("h2");
     //console.log(cartEl);
     //console.log(this.totalOutput);
@@ -105,13 +114,14 @@ class ProductItem extends Component {
 }
 
 class ProductList extends Component {
-  products = [];
+  #products = [];
   constructor(renderHookId) {
-    super(renderHookId);
+    super(renderHookId, false);
+    this.render();
     this.fetchProducts();
   };
   fetchProducts() { 
-    this.products = [
+    this.#products = [
       new Product(
         "A pillow",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1hmEEAgvZkgJjI0xFaErd13pJ3ifeuB1UM8GNrOTM2hX52CIIzcHqhiiQ&s=10",
@@ -128,18 +138,17 @@ class ProductList extends Component {
     this.renderProducts();
   };
   renderProducts() {
-    for (const prod of this.products) {
+    for (const prod of this.#products) {
       new ProductItem(prod, 'prod-list');
     }
 
   };
   render() {
     console.log('entrou no ProductList.render()');
-    const prodList = this.createRootElement("ul", "product-list", [
+    this.createRootElement("ul", "product-list", [
       new ElementAttribute("id", "prod-list"),
     ]);
-    console.log(this.products);
-    if(this.products && this.products.length > 0) {
+    if(this.#products && this.#products.length > 0) {
       this.renderProducts();
     }
   }

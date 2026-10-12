@@ -7,6 +7,31 @@ class Product {
     this.price = price;
   }
 };
+class ElementAttribute {
+  constructor(attrName, attrValue) {
+    this.name = attrName;
+    this.value = attrValue;
+  };
+
+};
+class Component {
+  constructor(renderHookId) {
+    this.hook = renderHookId;
+  };
+  createRootElement(tag, cssClasses, attributes) {
+    const rootElement = document.createElement(tag);
+    if (cssClasses) {
+      rootElement.className = cssClasses;
+    }
+    if(attributes && attributes.length > 0) {
+      for (const attr of attributes) {
+        rootElement.setAttribute(attr.name, attr.value);
+      }
+    }
+    document.getElementById(this.hook).append(rootElement);
+    return rootElement;
+  };
+};
 class ShoppingCart {
   items = [];
   set cartItems(value) {
